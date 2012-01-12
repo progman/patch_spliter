@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-// 0.0.2
+// 0.0.3
 // Alexey Potehin, http://www.gnuplanet.ru/doc/cv, <gnuplanet@gmail.com>
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 #include <stdio.h>
@@ -16,6 +16,7 @@
 
 //#define DEBUG
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+// global variables
 namespace global
 {
     struct item_t
@@ -43,6 +44,7 @@ namespace global
     bool flag_pedantic = false;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+// convert string to boolean
 bool str2bool(const std::string& str)
 {
     std::string tmp = str;
@@ -62,6 +64,7 @@ bool str2bool(const std::string& str)
     return false;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+// save file
 int save_file(const std::string& file_name, const unsigned char* const p, size_t size)
 {
     int rc;
@@ -114,6 +117,7 @@ int save_file(const std::string& file_name, const unsigned char* const p, size_t
     return 0;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+// split file to strings
 int stage1(void* p_mmap, size_t size)
 {
     char* p = (char*)p_mmap;
@@ -130,6 +134,7 @@ int stage1(void* p_mmap, size_t size)
     return 0;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+// find patch tokens
 int stage2(void* p_mmap, size_t size)
 {
     char* p = (char*)p_mmap;
@@ -305,6 +310,7 @@ int stage2(void* p_mmap, size_t size)
     return 0;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+// save tokens to files
 int stage3(void* p_mmap, const std::string& file_name)
 {
     int rc;
@@ -340,7 +346,6 @@ int stage3(void* p_mmap, const std::string& file_name)
 	    }
 */
 
-
 	    if ((*j).flag_minus == true)
 	    {
 		break;
@@ -353,9 +358,6 @@ int stage3(void* p_mmap, const std::string& file_name)
 		printf ("token, offset=%lu, size=%lu\n", (*j).offset, (*j).size);
 		printf ("{---------------------------------------------------------------------\n");
 #endif
-
-
-
 
 		if (global::flag_pedantic == true)
 		{
@@ -472,7 +474,7 @@ int main(int argc, char* argv[])
 
     if ((argc == 1) || (argc > 3))
     {
-	printf ("patch spliter    version %s-%s\n", ARCH, VERSION);
+	printf ("patch_spliter    version %s-%s\n", ARCH, VERSION);
 	printf ("example: patch_spliter [--flag_pedantic=true|false] file.patch\n");
 	printf ("\n");
 	return 1;
