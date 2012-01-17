@@ -406,7 +406,7 @@ int do_it(const std::string& file_name)
     rc = open(file_name.c_str(), O_RDONLY);
     if (rc == -1)
     {
-	printf ("\nERROR[hash::open]: %s\n", strerror(errno));
+	printf ("\nERROR[do_it::open]: %s\n", strerror(errno));
 	return -1;
     }
     int file_handle = rc;
@@ -417,7 +417,7 @@ int do_it(const std::string& file_name)
     rc = fstat64(file_handle, &stat_buf);
     if (rc != 0)
     {
-	printf ("\nERROR[scan::fstat]: %s\n", strerror(errno));
+	printf ("\nERROR[do_it::fstat]: %s\n", strerror(errno));
 	return -1;
     }
     size_t size = (size_t)stat_buf.st_size;
@@ -426,7 +426,7 @@ int do_it(const std::string& file_name)
 // check file size
     if (size == 0)
     {
-	printf ("\nERROR[hash::???]: file is empty\n");
+	printf ("\nERROR[do_it]: file is empty\n");
 	return -1;
     }
 
@@ -435,7 +435,7 @@ int do_it(const std::string& file_name)
     void *p_mmap = mmap(NULL, size, PROT_READ, MAP_PRIVATE, file_handle, 0);
     if (p_mmap == MAP_FAILED)
     {
-	printf ("\nERROR[hash::mmap]: %s\n", strerror(errno));
+	printf ("\nERROR[do_it::mmap]: %s\n", strerror(errno));
 	return -1;
     }
 
@@ -450,7 +450,7 @@ int do_it(const std::string& file_name)
     rc = munmap(p_mmap, size);
     if (rc == -1)
     {
-	printf ("\nERROR[hash::munmap]: %s\n", strerror(errno));
+	printf ("\nERROR[do_it::munmap]: %s\n", strerror(errno));
 	return -1;
     }
 
@@ -459,12 +459,19 @@ int do_it(const std::string& file_name)
     rc = close(file_handle);
     if (rc == -1)
     {
-	printf ("\nERROR[hash::close]: %s\n", strerror(errno));
+	printf ("\nERROR[do_it::close]: %s\n", strerror(errno));
 	return -1;
     }
 
 
     return 0;
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void help()
+{
+    printf ("patch_spliter    version %s-%s\n", ARCH, VERSION);
+    printf ("example: patch_spliter [--flag_pedantic=true|false] file.patch\n");
+    printf ("\n");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 // main function
@@ -474,14 +481,22 @@ int main(int argc, char* argv[])
 
     if ((argc == 1) || (argc > 3))
     {
-	printf ("patch_spliter    version %s-%s\n", ARCH, VERSION);
-	printf ("example: patch_spliter [--flag_pedantic=true|false] file.patch\n");
-	printf ("\n");
+	help();
 	return 1;
     }
 
     if (argc == 2)
     {
+	if
+	(
+	    (strcmp(argv[1], "-h") == 0) ||
+	    (strcmp(argv[1], "-help") == 0) ||
+	    (strcmp(argv[1], "--help") == 0)
+	)
+	{
+	    help();
+	    return 1;
+	}
 	rc = do_it(argv[1]);
     }
     else
