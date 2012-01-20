@@ -1,14 +1,14 @@
-VERSION=0.0.4
+VERSION=0.0.5
 #-D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
-OPT_DEBUG=  -std=c++0x -Wall -Wextra -Wlong-long -Wunused -O0 -ggdb -pedantic
+OPT_DEBUG=  -std=c++0x -Wall -Wextra -Wlong-long -Wunused -O0 -ggdb -pedantic -pg
 OPT_RELEASE=-std=c++0x -Wall -Wextra -Wlong-long -Wunused -O777 -s
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 CXX=g++
 LN=g++
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-CFLAGS_x32DBG="-m32 -ggdb -O0   -std=c++0x -Wall -Wextra -Wlong-long -Wunused";
+CFLAGS_x32DBG="-m32 -ggdb -O0   -std=c++0x -Wall -Wextra -Wlong-long -Wunused -pg";
 CFLAGS_x32REL="-m32       -O777 -std=c++0x -Wall -Wextra -Wlong-long -Wunused";
-CFLAGS_x64DBG="-m64 -ggdb -O0   -std=c++0x -Wall -Wextra -Wlong-long -Wunused";
+CFLAGS_x64DBG="-m64 -ggdb -O0   -std=c++0x -Wall -Wextra -Wlong-long -Wunused -pg";
 CFLAGS_x64REL="-m64       -O777 -std=c++0x -Wall -Wextra -Wlong-long -Wunused";
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 LFLAGS_x32DBG="-m32 -lrt -lpthread -lpq -ggdb";

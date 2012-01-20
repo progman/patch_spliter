@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-// 0.0.4
+// 0.0.5
 // Alexey Potehin, http://www.gnuplanet.ru/doc/cv, <gnuplanet@gmail.com>
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 #include <stdio.h>
@@ -152,7 +152,7 @@ int stage2(void* p_mmap, size_t size)
 #endif
 
 	size_t offset = (*i).offset;
-	if ((offset + 2) >= size)
+	if ((offset + 3) >= size)
 	{
 	    (*i).flag_valid=false;
 	    continue;
@@ -164,7 +164,8 @@ int stage2(void* p_mmap, size_t size)
 	    (
 		(p[offset + 0] == '-') &&
 		(p[offset + 1] == '-') &&
-		(p[offset + 2] == '-')
+		(p[offset + 2] == '-') &&
+		(p[offset + 3] == ' ')
 	    )
 	    {
 		if (iterator_prev != global::item_list.end())
@@ -195,7 +196,8 @@ int stage2(void* p_mmap, size_t size)
 	    (
 		(p[offset + 0] == '+') &&
 		(p[offset + 1] == '+') &&
-		(p[offset + 2] == '+')
+		(p[offset + 2] == '+') &&
+		(p[offset + 3] == ' ')
 	    )
 	    {
 /*
