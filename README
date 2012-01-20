@@ -2,4 +2,13 @@ Splits the patch file into parts
 
 
 1) Get this : git clone git://github.com/progman/patch_spliter
-2) Use this : patch_spliter.sh file.patch
+2) Use this : patch_spliter file.patch
+
+
+Example:
+    diff -ud a b > a-b.patch
+    patch_spliter a-b.patch
+
+Example:
+    git diff --minimal master dev > master-dev.patch
+    patch_spliter --flag_pedantic=true master-dev.patch
