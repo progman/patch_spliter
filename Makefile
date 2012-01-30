@@ -1,4 +1,4 @@
-VERSION=0.0.5
+VERSION=0.0.6
 #-D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
 OPT_DEBUG=  -std=c++0x -Wall -Wextra -Wlong-long -Wunused -O0 -ggdb -pedantic -pg
 OPT_RELEASE=-std=c++0x -Wall -Wextra -Wlong-long -Wunused -O777 -s

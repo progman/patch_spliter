@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-// 0.0.5
+// 0.0.6
 // Alexey Potehin, http://www.gnuplanet.ru/doc/cv, <gnuplanet@gmail.com>
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 #include <stdio.h>
@@ -472,7 +472,7 @@ int do_it(const std::string& file_name)
 void help()
 {
     printf ("patch_spliter    version %s-%s\n", ARCH, VERSION);
-    printf ("example: patch_spliter [--flag_pedantic=true|false] file.patch\n");
+    printf ("example: patch_spliter [-p, --flag_pedantic=true|false] file.patch\n");
     printf ("\n");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -504,11 +504,22 @@ int main(int argc, char* argv[])
     else
     {
 	std::string key = argv[1];
-	std::string tmpl = "--flag_pedantic=";
-	if ((key.size() >= tmpl.size()) && (key.substr(0, tmpl.size()) == tmpl))
+
 	{
-	    std::string value = key.substr(tmpl.size(), key.size() - 1);
-	    global::flag_pedantic = str2bool(value);
+	    std::string tmpl = "--flag_pedantic=";
+	    if ((key.size() >= tmpl.size()) && (key.substr(0, tmpl.size()) == tmpl))
+	    {
+		std::string value = key.substr(tmpl.size(), key.size() - 1);
+		global::flag_pedantic = str2bool(value);
+	    }
+	}
+
+	{
+	    std::string tmpl = "-p";
+	    if (key == tmpl)
+	    {
+		global::flag_pedantic = true;
+	    }
 	}
 
 	rc = do_it(argv[2]);
