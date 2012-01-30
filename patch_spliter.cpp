@@ -446,6 +446,7 @@ int do_it(const std::string& file_name)
     stage1(p_mmap, size);
     stage2(p_mmap, size);
     stage3(p_mmap, file_name);
+    global::item_list.clear();
 
 
 // close map file to memory
@@ -523,6 +524,7 @@ int main(int argc, char* argv[])
 		global::flag_pedantic = true;
 	    }
 	}
+
 
 	rc = do_it(argv[2]);
     }
