@@ -72,7 +72,7 @@ int save_file(const std::string& file_name, const unsigned char* const p, size_t
 
 // open new file
     umask(0);
-    rc = ::open(file_name.c_str(), O_WRONLY | O_CREAT | O_TRUNC | O_SYNC | O_LARGEFILE, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+    rc = ::open(file_name.c_str(), O_WRONLY | O_CREAT | O_TRUNC | O_LARGEFILE, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (rc == -1)
     {
 	printf ("\nERROR[save_file::open]: %s\n", strerror(errno));
@@ -125,7 +125,7 @@ int stage1(void* p_mmap, size_t size)
     global::item_list.push_back(0);
     for (size_t i=0; i < size; i++)
     {
-	if (p[i] == '\n')
+	if (*p++ == '\n')
 	{
 	    global::item_list.push_back(global::item_t(i + 1));
 	}
@@ -481,11 +481,13 @@ int main(int argc, char* argv[])
 {
     int rc;
 
+
     if ((argc == 1) || (argc > 3))
     {
 	help();
 	return 1;
     }
+
 
     if (argc == 2)
     {
@@ -525,10 +527,12 @@ int main(int argc, char* argv[])
 	rc = do_it(argv[2]);
     }
 
+
     if (rc == 0)
     {
 	printf ("Ok.\n");
     }
+
 
     return rc;
 }
