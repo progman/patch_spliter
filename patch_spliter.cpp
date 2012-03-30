@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-// 0.0.6
-// Alexey Potehin, http://www.gnuplanet.ru/doc/cv, <gnuplanet@gmail.com>
+// 0.0.7
+// Alexey Potehin <gnuplanet@gmail.com>, http://www.gnuplanet.ru/doc/cv
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 #include <stdio.h>
 #include <string>
@@ -52,6 +52,11 @@ bool str2bool(const std::string& str)
     std::transform(tmp.begin(), tmp.end(), tmp.begin(), tolower);
 
     if (tmp == "true")
+    {
+	return true;
+    }
+
+    if (tmp == "on")
     {
 	return true;
     }
@@ -306,7 +311,6 @@ int stage2(void* p_mmap, size_t size)
 
 	}
     }
-
 
 
     return 0;
