@@ -1,50 +1,52 @@
-VERSION=0.0.6
-#-D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
-OPT_DEBUG=  -std=c++0x -Wall -Wextra -Wlong-long -Wunused -O0 -ggdb -pedantic -pg
-OPT_RELEASE=-std=c++0x -Wall -Wextra -Wlong-long -Wunused -O777 -s
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+PROG_NAME=patch_spliter
+PROG_VERSION=0.0.7
+PROG_URL=https://github.com/progman/patch_spliter
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 CXX=g++
 LN=g++
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-CFLAGS_x32DBG="-m32 -ggdb -O0   -std=c++0x -Wall -Wextra -Wlong-long -Wunused -pg";
-CFLAGS_x32REL="-m32       -O777 -std=c++0x -Wall -Wextra -Wlong-long -Wunused";
-CFLAGS_x64DBG="-m64 -ggdb -O0   -std=c++0x -Wall -Wextra -Wlong-long -Wunused -pg";
-CFLAGS_x64REL="-m64       -O777 -std=c++0x -Wall -Wextra -Wlong-long -Wunused";
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-LFLAGS_x32DBG="-m32 -lrt -lpthread -lpq -ggdb";
-LFLAGS_x32REL="-m32 -lrt -lpthread -lpq -s";
-LFLAGS_x64DBG="-m64 -lrt -lpthread -lpq -ggdb";
-LFLAGS_x64REL="-m64 -lrt -lpthread -lpq -s";
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#-D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
+CFLAGS_x32DBG=-m32 -ggdb -pg -pedantic -O0 -std=c++11 -Wall -Wextra -Wlong-long -Wunused
+CFLAGS_x32REL=-m32           -pedantic -O3 -std=c++11 -Wall -Wextra -Wlong-long -Wunused
+CFLAGS_x64DBG=-m64 -ggdb -pg -pedantic -O0 -std=c++11 -Wall -Wextra -Wlong-long -Wunused
+CFLAGS_x64REL=-m64           -pedantic -O3 -std=c++11 -Wall -Wextra -Wlong-long -Wunused
+#--analyze
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+LFLAGS_x32DBG=-m32 -ggdb
+LFLAGS_x32REL=-m32 -s
+LFLAGS_x64DBG=-m64 -ggdb
+LFLAGS_x64REL=-m64 -s
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 help:
 	@echo "use make [x32 | x64 | x32dbg | x64dbg | clean]";
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-x32:    patch_spliter.cpp Makefile
-	@if [ ! -e bin ]; then    (mkdir bin;)     fi
-	@$(CXX) patch_spliter.cpp -c -o bin/patch_spliter.o -D'ARCH="$(@)"' -D'VERSION="$(VERSION)"' $(OPT_RELEASE) -m32
-	@$(LN) bin/patch_spliter.o -o bin/patch_spliter-$(@)-$(VERSION) -D'ARCH="$(@)"' -D'VERSION="$(VERSION)"' $(OPT_RELEASE) -m32
-	@ln -sf patch_spliter-$(@)-$(VERSION) bin/patch_spliter
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 x32dbg: patch_spliter.cpp Makefile
 	@if [ ! -e bin ]; then    (mkdir bin;)     fi
-	@$(CXX) patch_spliter.cpp -c -o bin/patch_spliter.o -D'ARCH="$(@)"' -D'VERSION="$(VERSION)"' $(OPT_DEBUG) -m32
-	@$(LN) bin/patch_spliter.o -o bin/patch_spliter-$(@)-$(VERSION) -D'ARCH="$(@)"' -D'VERSION="$(VERSION)"' $(OPT_DEBUG) -m32
-	@ln -sf patch_spliter-$(@)-$(VERSION) bin/patch_spliter
-	@objdump -Dslx bin/patch_spliter-$(@)-$(VERSION) > bin/patch_spliter-$(@)-$(VERSION).dump;
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-x64:    patch_spliter.cpp Makefile
+	@$(CXX) patch_spliter.cpp -c -o bin/patch_spliter.o -D'PROG_NAME="$(PROG_NAME)"' -D'PROG_VERSION="$(PROG_VERSION)"' -D'PROG_TARGET="$(@)"' -D'PROG_FULL_NAME="$(PROG_NAME)-$(@)-$(PROG_VERSION)"' -D'PROG_URL="$(PROG_URL)"' $(CFLAGS_x32DBG)
+	@$(LN) bin/patch_spliter.o -o bin/$(PROG_NAME)-$(@)-$(PROG_VERSION) $(LFLAGS_x32DBG)
+	@ln -sf $(PROG_NAME)-$(@)-$(PROG_VERSION) bin/$(PROG_NAME)
+	@objdump -Dslx bin/$(PROG_NAME)-$(@)-$(PROG_VERSION) > bin/$(PROG_NAME)-$(@)-$(PROG_VERSION).dump;
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+x32:    patch_spliter.cpp Makefile
 	@if [ ! -e bin ]; then    (mkdir bin;)     fi
-	@$(CXX) patch_spliter.cpp -c -o bin/patch_spliter.o -D'ARCH="$(@)"' -D'VERSION="$(VERSION)"' $(OPT_RELEASE) -m64
-	@$(LN) bin/patch_spliter.o -o bin/patch_spliter-$(@)-$(VERSION) -D'ARCH="$(@)"' -D'VERSION="$(VERSION)"' $(OPT_RELEASE) -m64
-	@ln -sf patch_spliter-$(@)-$(VERSION) bin/patch_spliter
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	@$(CXX) patch_spliter.cpp -c -o bin/patch_spliter.o -D'PROG_NAME="$(PROG_NAME)"' -D'PROG_VERSION="$(PROG_VERSION)"' -D'PROG_TARGET="$(@)"' -D'PROG_FULL_NAME="$(PROG_NAME)-$(@)-$(PROG_VERSION)"' -D'PROG_URL="$(PROG_URL)"' $(CFLAGS_x32REL)
+	@$(LN) bin/patch_spliter.o -o bin/$(PROG_NAME)-$(@)-$(PROG_VERSION) $(LFLAGS_x32REL)
+	@ln -sf $(PROG_NAME)-$(@)-$(PROG_VERSION) bin/$(PROG_NAME)
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 x64dbg: patch_spliter.cpp Makefile
 	@if [ ! -e bin ]; then    (mkdir bin;)     fi
-	@$(CXX) patch_spliter.cpp -c -o bin/patch_spliter.o -D'ARCH="$(@)"' -D'VERSION="$(VERSION)"' $(OPT_DEBUG) -m64
-	@$(LN) bin/patch_spliter.o -o bin/patch_spliter-$(@)-$(VERSION) -D'ARCH="$(@)"' -D'VERSION="$(VERSION)"' $(OPT_DEBUG) -m64
-	@ln -sf patch_spliter-$(@)-$(VERSION) bin/patch_spliter
-	@objdump -Dslx bin/patch_spliter-$(@)-$(VERSION) > bin/patch_spliter-$(@)-$(VERSION).dump;
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+	@$(CXX) patch_spliter.cpp -c -o bin/patch_spliter.o -D'PROG_NAME="$(PROG_NAME)"' -D'PROG_VERSION="$(PROG_VERSION)"' -D'PROG_TARGET="$(@)"' -D'PROG_FULL_NAME="$(PROG_NAME)-$(@)-$(PROG_VERSION)"' -D'PROG_URL="$(PROG_URL)"' $(CFLAGS_x64DBG)
+	@$(LN) bin/patch_spliter.o -o bin/$(PROG_NAME)-$(@)-$(PROG_VERSION) $(LFLAGS_x64DBG)
+	@ln -sf $(PROG_NAME)-$(@)-$(PROG_VERSION) bin/$(PROG_NAME)
+	@objdump -Dslx bin/$(PROG_NAME)-$(@)-$(PROG_VERSION) > bin/$(PROG_NAME)-$(@)-$(PROG_VERSION).dump;
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+x64:    patch_spliter.cpp Makefile
+	@if [ ! -e bin ]; then    (mkdir bin;)     fi
+	@$(CXX) patch_spliter.cpp -c -o bin/patch_spliter.o -D'PROG_NAME="$(PROG_NAME)"' -D'PROG_VERSION="$(PROG_VERSION)"' -D'PROG_TARGET="$(@)"' -D'PROG_FULL_NAME="$(PROG_NAME)-$(@)-$(PROG_VERSION)"' -D'PROG_URL="$(PROG_URL)"' $(CFLAGS_x64REL)
+	@$(LN) bin/patch_spliter.o -o bin/$(PROG_NAME)-$(@)-$(PROG_VERSION) $(LFLAGS_x64REL)
+	@ln -sf $(PROG_NAME)-$(@)-$(PROG_VERSION) bin/$(PROG_NAME)
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 clean:
 	@if [ -e bin ]; then    rm -rf bin;    fi
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
