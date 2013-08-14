@@ -2,49 +2,58 @@
 PROG_NAME=patch_spliter
 PROG_VERSION=0.0.7
 PROG_URL=https://github.com/progman/patch_spliter
+
+SOURCE_LIST=patch_spliter.cpp
+HEADER_LIST=
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-CXX=g++
+CC=g++
 LN=g++
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-#-D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
-CFLAGS_x32DBG=-m32 -ggdb -pg -O0 -pedantic -std=c++11 -Wall -Wextra -Wlong-long -Wunused
-CFLAGS_x32REL=-m32           -O3 -pedantic -std=c++11 -Wall -Wextra -Wlong-long -Wunused
-CFLAGS_x64DBG=-m64 -ggdb -pg -O0 -pedantic -std=c++11 -Wall -Wextra -Wlong-long -Wunused
-CFLAGS_x64REL=-m64           -O3 -pedantic -std=c++11 -Wall -Wextra -Wlong-long -Wunused
-#--analyze
+CFLAGS_x32DBG=-m32 -pedantic -std=c++11 -Wall -Wextra -Wlong-long -Wunused -pipe -march=native -mtune=native -O0 -g3 -ggdb -pg
+CFLAGS_x32REL=-m32 -pedantic -std=c++11 -Wall -Wextra -Wlong-long -Wunused -pipe -march=native -mtune=native -O3 -g0           -funroll-all-loops
+CFLAGS_x64DBG=-m64 -pedantic -std=c++11 -Wall -Wextra -Wlong-long -Wunused -pipe -march=native -mtune=native -O0 -g3 -ggdb -pg
+CFLAGS_x64REL=-m64 -pedantic -std=c++11 -Wall -Wextra -Wlong-long -Wunused -pipe -march=native -mtune=native -O3 -g0           -funroll-all-loops
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-LFLAGS_x32DBG=-m32 -ggdb
-LFLAGS_x32REL=-m32 -s
-LFLAGS_x64DBG=-m64 -ggdb
-LFLAGS_x64REL=-m64 -s
+LFLAGS_x32DBG=-m32 -g3 -ggdb
+LFLAGS_x32REL=-m32 -g0       -s
+LFLAGS_x64DBG=-m64 -g3 -ggdb
+LFLAGS_x64REL=-m64 -g0       -s
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 help:
 	@echo "use make [x32 | x64 | x32dbg | x64dbg | clean]";
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-x32dbg: patch_spliter.cpp Makefile
+x32dbg: Makefile $(SOURCE_LIST) $(HEADER_LIST)
 	@if [ ! -e bin ]; then    (mkdir bin;)     fi
-	@$(CXX) patch_spliter.cpp -o bin/patch_spliter.o -c -D'PROG_NAME="$(PROG_NAME)"' -D'PROG_VERSION="$(PROG_VERSION)"' -D'PROG_TARGET="$(@)"' -D'PROG_FULL_NAME="$(PROG_NAME)-$(@)-$(PROG_VERSION)"' -D'PROG_URL="$(PROG_URL)"' $(CFLAGS_x32DBG)
-	@$(LN) bin/patch_spliter.o -o bin/$(PROG_NAME)-$(@)-$(PROG_VERSION) $(LFLAGS_x32DBG)
+	@$(CC) patch_spliter.cpp -o bin/patch_spliter.o -c -D'PROG_NAME="$(PROG_NAME)"' -D'PROG_VERSION="$(PROG_VERSION)"' -D'PROG_TARGET="$(@)"' -D'PROG_FULL_NAME="$(PROG_NAME)-$(@)-$(PROG_VERSION)"' -D'PROG_URL="$(PROG_URL)"' $(CFLAGS_x32DBG)
+	@$(LN) bin/*.o -o bin/$(PROG_NAME)-$(@)-$(PROG_VERSION) $(LFLAGS_x32DBG)
 	@ln -sf $(PROG_NAME)-$(@)-$(PROG_VERSION) bin/$(PROG_NAME)
 	@objdump -Dslx bin/$(PROG_NAME)-$(@)-$(PROG_VERSION) > bin/$(PROG_NAME)-$(@)-$(PROG_VERSION).dump;
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-x32: patch_spliter.cpp Makefile
+x32test: Makefile $(SOURCE_LIST) $(HEADER_LIST)
 	@if [ ! -e bin ]; then    (mkdir bin;)     fi
-	@$(CXX) patch_spliter.cpp -o bin/patch_spliter.o -c -D'PROG_NAME="$(PROG_NAME)"' -D'PROG_VERSION="$(PROG_VERSION)"' -D'PROG_TARGET="$(@)"' -D'PROG_FULL_NAME="$(PROG_NAME)-$(@)-$(PROG_VERSION)"' -D'PROG_URL="$(PROG_URL)"' $(CFLAGS_x32REL)
-	@$(LN) bin/patch_spliter.o -o bin/$(PROG_NAME)-$(@)-$(PROG_VERSION) $(LFLAGS_x32REL)
+	@clang --analyze patch_spliter.cpp -o bin/patch_spliter.o -c -D'PROG_NAME="$(PROG_NAME)"' -D'PROG_VERSION="$(PROG_VERSION)"' -D'PROG_TARGET="$(@)"' -D'PROG_FULL_NAME="$(PROG_NAME)-$(@)-$(PROG_VERSION)"' -D'PROG_URL="$(PROG_URL)"' $(CFLAGS_x32REL)
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+x32: Makefile $(SOURCE_LIST) $(HEADER_LIST)
+	@if [ ! -e bin ]; then    (mkdir bin;)     fi
+	@$(CC) patch_spliter.cpp -o bin/patch_spliter.o -c -D'PROG_NAME="$(PROG_NAME)"' -D'PROG_VERSION="$(PROG_VERSION)"' -D'PROG_TARGET="$(@)"' -D'PROG_FULL_NAME="$(PROG_NAME)-$(@)-$(PROG_VERSION)"' -D'PROG_URL="$(PROG_URL)"' $(CFLAGS_x32REL)
+	@$(LN) bin/*.o -o bin/$(PROG_NAME)-$(@)-$(PROG_VERSION) $(LFLAGS_x32REL)
 	@ln -sf $(PROG_NAME)-$(@)-$(PROG_VERSION) bin/$(PROG_NAME)
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-x64dbg: patch_spliter.cpp Makefile
+x64dbg: Makefile $(SOURCE_LIST) $(HEADER_LIST)
 	@if [ ! -e bin ]; then    (mkdir bin;)     fi
-	@$(CXX) patch_spliter.cpp -o bin/patch_spliter.o -c -D'PROG_NAME="$(PROG_NAME)"' -D'PROG_VERSION="$(PROG_VERSION)"' -D'PROG_TARGET="$(@)"' -D'PROG_FULL_NAME="$(PROG_NAME)-$(@)-$(PROG_VERSION)"' -D'PROG_URL="$(PROG_URL)"' $(CFLAGS_x64DBG)
-	@$(LN) bin/patch_spliter.o -o bin/$(PROG_NAME)-$(@)-$(PROG_VERSION) $(LFLAGS_x64DBG)
+	@$(CC) patch_spliter.cpp -o bin/patch_spliter.o -c -D'PROG_NAME="$(PROG_NAME)"' -D'PROG_VERSION="$(PROG_VERSION)"' -D'PROG_TARGET="$(@)"' -D'PROG_FULL_NAME="$(PROG_NAME)-$(@)-$(PROG_VERSION)"' -D'PROG_URL="$(PROG_URL)"' $(CFLAGS_x64DBG)
+	@$(LN) bin/*.o -o bin/$(PROG_NAME)-$(@)-$(PROG_VERSION) $(LFLAGS_x64DBG)
 	@ln -sf $(PROG_NAME)-$(@)-$(PROG_VERSION) bin/$(PROG_NAME)
 	@objdump -Dslx bin/$(PROG_NAME)-$(@)-$(PROG_VERSION) > bin/$(PROG_NAME)-$(@)-$(PROG_VERSION).dump;
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-x64: patch_spliter.cpp Makefile
+x64test: Makefile $(SOURCE_LIST) $(HEADER_LIST)
 	@if [ ! -e bin ]; then    (mkdir bin;)     fi
-	@$(CXX) patch_spliter.cpp -o bin/patch_spliter.o -c -D'PROG_NAME="$(PROG_NAME)"' -D'PROG_VERSION="$(PROG_VERSION)"' -D'PROG_TARGET="$(@)"' -D'PROG_FULL_NAME="$(PROG_NAME)-$(@)-$(PROG_VERSION)"' -D'PROG_URL="$(PROG_URL)"' $(CFLAGS_x64REL)
-	@$(LN) bin/patch_spliter.o -o bin/$(PROG_NAME)-$(@)-$(PROG_VERSION) $(LFLAGS_x64REL)
+	@clang --analyze patch_spliter.cpp -o bin/patch_spliter.o -c -D'PROG_NAME="$(PROG_NAME)"' -D'PROG_VERSION="$(PROG_VERSION)"' -D'PROG_TARGET="$(@)"' -D'PROG_FULL_NAME="$(PROG_NAME)-$(@)-$(PROG_VERSION)"' -D'PROG_URL="$(PROG_URL)"' $(CFLAGS_x64REL)
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+x64: Makefile $(SOURCE_LIST) $(HEADER_LIST)
+	@if [ ! -e bin ]; then    (mkdir bin;)     fi
+	@$(CC) patch_spliter.cpp -o bin/patch_spliter.o -c -D'PROG_NAME="$(PROG_NAME)"' -D'PROG_VERSION="$(PROG_VERSION)"' -D'PROG_TARGET="$(@)"' -D'PROG_FULL_NAME="$(PROG_NAME)-$(@)-$(PROG_VERSION)"' -D'PROG_URL="$(PROG_URL)"' $(CFLAGS_x64REL)
+	@$(LN) bin/*.o -o bin/$(PROG_NAME)-$(@)-$(PROG_VERSION) $(LFLAGS_x64REL)
 	@ln -sf $(PROG_NAME)-$(@)-$(PROG_VERSION) bin/$(PROG_NAME)
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 clean:
