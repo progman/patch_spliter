@@ -1,7 +1,7 @@
 Splits the patch file into parts
 
 
-1) Get this : git clone git://github.com/progman/patch_spliter
+1) Get this : git clone https://github.com/progman/patch_spliter.git
 2) Use this : patch_spliter file.patch
 
 
