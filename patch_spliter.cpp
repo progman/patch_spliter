@@ -14,7 +14,9 @@
 #include <unistd.h>
 #include <algorithm>
 
-//#define DEBUG
+#if (INTPTR_MAX != INT32_MAX) && (INTPTR_MAX != INT64_MAX)
+#error "Environment not 32 or 64-bit."
+#endif
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 // global variables
 namespace global
@@ -152,7 +154,7 @@ int stage2(void *p_mmap, size_t size)
 
 	for (std::list<global::item_t>::iterator i=global::item_list.begin(), i_end = global::item_list.end(); i != i_end; ++i)
 	{
-#ifdef DEBUG
+#ifdef FLAG_DEBUG
 		printf("%lu\n", (*i).offset);
 #endif
 
@@ -191,7 +193,7 @@ int stage2(void *p_mmap, size_t size)
 				iterator_minus  = i;
 				iterator_prev   = i;
 				(*i).flag_minus = true;
-#ifdef DEBUG
+#ifdef FLAG_DEBUG
 				printf("detect minus %lu\n", (*i).offset);
 #endif
 				break;
@@ -221,7 +223,7 @@ int stage2(void *p_mmap, size_t size)
 				iterator_plus  = i;
 //				iterator_prev  = i;
 				(*i).flag_plus = true;
-#ifdef DEBUG
+#ifdef FLAG_DEBUG
 				printf("detect plus %lu\n", (*i).offset);
 #endif
 				(*i).flag_valid = false; //!!!
@@ -250,7 +252,7 @@ int stage2(void *p_mmap, size_t size)
 				iterator_token  = i;
 				iterator_prev   = i;
 				(*i).flag_token = true;
-#ifdef DEBUG
+#ifdef FLAG_DEBUG
 				printf("detect token %lu\n", (*i).offset);
 #endif
 				break;
@@ -266,14 +268,14 @@ int stage2(void *p_mmap, size_t size)
 				if (iterator_prev != global::item_list.end())
 				{
 					(*iterator_prev).size = (*i).offset - (*iterator_prev).offset;
-#ifdef DEBUG
+#ifdef FLAG_DEBUG
 					printf("diff token shirink, (*iterator_prev).offset=%lu, (*i).offset=%lu, (*iterator_prev).size=%lu\n", (*iterator_prev).offset, (*i).offset, (*iterator_prev).size);
 #endif
 				}
 				iterator_prev = i;
 
 				(*i).flag_valid = false;
-#ifdef DEBUG
+#ifdef FLAG_DEBUG
 				printf("detect diff %lu\n", (*i).offset);
 #endif
 				break;
@@ -298,13 +300,13 @@ int stage2(void *p_mmap, size_t size)
 
 			if (iterator_plus == global::item_list.end())
 			{
-#ifdef DEBUG
+#ifdef FLAG_DEBUG
 				printf("iterator_plus == null\n");
 #endif
 			}
 			if (iterator_token == global::item_list.end())
 			{
-#ifdef DEBUG
+#ifdef FLAG_DEBUG
 				printf("iterator_token == null\n");
 #endif
 			}
@@ -330,7 +332,7 @@ int stage3(void *p_mmap, const std::string &file_name)
 		if ((*i).flag_valid == false) continue;
 		if ((*i).flag_minus == false) continue;
 
-#ifdef DEBUG
+#ifdef FLAG_DEBUG
 		printf("minus, offset=%lu, size=%lu\n", (*i).offset, (*i).size);
 #endif
 		std::string body = "";
@@ -360,7 +362,7 @@ int stage3(void *p_mmap, const std::string &file_name)
 
 			if ((*j).flag_token == true)
 			{
-#ifdef DEBUG
+#ifdef FLAG_DEBUG
 				printf("token, offset=%lu, size=%lu\n", (*j).offset, (*j).size);
 				printf("{---------------------------------------------------------------------\n");
 #endif
@@ -371,11 +373,16 @@ int stage3(void *p_mmap, const std::string &file_name)
 					body = head + std::string(p + (*j).offset, (*j).size);
 					token_count++;
 
-#ifdef DEBUG
+#ifdef FLAG_DEBUG
 					printf("%s", body.c_str());
 #endif
 					char buf[1024];
+#if (INTPTR_MAX == INT32_MAX)
+					sprintf(buf, "%s-%08u-%08u.patch", file_name.c_str(), file_count, token_count);
+#endif
+#if (INTPTR_MAX == INT64_MAX)
 					sprintf(buf, "%s-%08lu-%08lu.patch", file_name.c_str(), file_count, token_count);
+#endif
 					rc = save_file(std::string(buf), (const unsigned char *)body.c_str(), body.size());
 					if (rc == -1) return -1;
 				}
@@ -384,7 +391,7 @@ int stage3(void *p_mmap, const std::string &file_name)
 					body += std::string(p + (*j).offset, (*j).size);
 				}
 
-#ifdef DEBUG
+#ifdef FLAG_DEBUG
 				printf("---------------------------------------------------------------------}\n");
 #endif
 			}
@@ -394,7 +401,12 @@ int stage3(void *p_mmap, const std::string &file_name)
 		if (global::flag_pedantic == false)
 		{
 			char buf[1024];
+#if (INTPTR_MAX == INT32_MAX)
+			sprintf(buf, "%s-%08u.patch", file_name.c_str(), file_count);
+#endif
+#if (INTPTR_MAX == INT64_MAX)
 			sprintf(buf, "%s-%08lu.patch", file_name.c_str(), file_count);
+#endif
 			rc = save_file(std::string(buf), (const unsigned char *)body.c_str(), body.size());
 			if (rc == -1) return -1;
 		}
