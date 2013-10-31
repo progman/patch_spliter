@@ -155,7 +155,12 @@ int stage2(void *p_mmap, size_t size)
 	for (std::list<global::item_t>::iterator i=global::item_list.begin(), i_end = global::item_list.end(); i != i_end; ++i)
 	{
 #ifdef FLAG_DEBUG
+#if (INTPTR_MAX == INT32_MAX)
+		printf("%u\n", (*i).offset);
+#endif
+#if (INTPTR_MAX == INT64_MAX)
 		printf("%lu\n", (*i).offset);
+#endif
 #endif
 
 		size_t offset = (*i).offset;
@@ -194,7 +199,12 @@ int stage2(void *p_mmap, size_t size)
 				iterator_prev   = i;
 				(*i).flag_minus = true;
 #ifdef FLAG_DEBUG
+#if (INTPTR_MAX == INT32_MAX)
+				printf("detect minus %u\n", (*i).offset);
+#endif
+#if (INTPTR_MAX == INT64_MAX)
 				printf("detect minus %lu\n", (*i).offset);
+#endif
 #endif
 				break;
 			}
@@ -224,7 +234,12 @@ int stage2(void *p_mmap, size_t size)
 //				iterator_prev  = i;
 				(*i).flag_plus = true;
 #ifdef FLAG_DEBUG
+#if (INTPTR_MAX == INT32_MAX)
+				printf("detect plus %u\n", (*i).offset);
+#endif
+#if (INTPTR_MAX == INT64_MAX)
 				printf("detect plus %lu\n", (*i).offset);
+#endif
 #endif
 				(*i).flag_valid = false; //!!!
 				break;
@@ -253,7 +268,12 @@ int stage2(void *p_mmap, size_t size)
 				iterator_prev   = i;
 				(*i).flag_token = true;
 #ifdef FLAG_DEBUG
+#if (INTPTR_MAX == INT32_MAX)
+				printf("detect token %u\n", (*i).offset);
+#endif
+#if (INTPTR_MAX == INT64_MAX)
 				printf("detect token %lu\n", (*i).offset);
+#endif
 #endif
 				break;
 			}
@@ -269,14 +289,24 @@ int stage2(void *p_mmap, size_t size)
 				{
 					(*iterator_prev).size = (*i).offset - (*iterator_prev).offset;
 #ifdef FLAG_DEBUG
+#if (INTPTR_MAX == INT32_MAX)
+					printf("diff token shirink, (*iterator_prev).offset=%u, (*i).offset=%u, (*iterator_prev).size=%u\n", (*iterator_prev).offset, (*i).offset, (*iterator_prev).size);
+#endif
+#if (INTPTR_MAX == INT64_MAX)
 					printf("diff token shirink, (*iterator_prev).offset=%lu, (*i).offset=%lu, (*iterator_prev).size=%lu\n", (*iterator_prev).offset, (*i).offset, (*iterator_prev).size);
+#endif
 #endif
 				}
 				iterator_prev = i;
 
 				(*i).flag_valid = false;
 #ifdef FLAG_DEBUG
+#if (INTPTR_MAX == INT32_MAX)
+				printf("detect diff %u\n", (*i).offset);
+#endif
+#if (INTPTR_MAX == INT64_MAX)
 				printf("detect diff %lu\n", (*i).offset);
+#endif
 #endif
 				break;
 			}
@@ -333,7 +363,12 @@ int stage3(void *p_mmap, const std::string &file_name)
 		if ((*i).flag_minus == false) continue;
 
 #ifdef FLAG_DEBUG
+#if (INTPTR_MAX == INT32_MAX)
+		printf("minus, offset=%u, size=%u\n", (*i).offset, (*i).size);
+#endif
+#if (INTPTR_MAX == INT64_MAX)
 		printf("minus, offset=%lu, size=%lu\n", (*i).offset, (*i).size);
+#endif
 #endif
 		std::string body = "";
 		std::string head(p + (*i).offset, (*i).size);
@@ -363,7 +398,12 @@ int stage3(void *p_mmap, const std::string &file_name)
 			if ((*j).flag_token == true)
 			{
 #ifdef FLAG_DEBUG
+#if (INTPTR_MAX == INT32_MAX)
+				printf("token, offset=%u, size=%u\n", (*j).offset, (*j).size);
+#endif
+#if (INTPTR_MAX == INT64_MAX)
 				printf("token, offset=%lu, size=%lu\n", (*j).offset, (*j).size);
+#endif
 				printf("{---------------------------------------------------------------------\n");
 #endif
 
