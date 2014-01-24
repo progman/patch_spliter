@@ -529,7 +529,7 @@ int do_it(const std::string &file_name)
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void help()
 {
-	printf("%s\t(%s)\n", PROG_FULL_NAME, PROG_URL);
+	printf("%s    %s\n", PROG_FULL_NAME, PROG_URL);
 	printf("example: patch_spliter [-p, --flag_pedantic=true|false] file.patch\n");
 	printf("\n");
 }
