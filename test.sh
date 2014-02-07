@@ -86,7 +86,7 @@ function test1()
 
 	if [ "${COUNT}" != "2" ];
 	then
-		echo "ERROR: can't make tmp file";
+		echo "ERROR: invalid file count (${COUNT})";
 		rm -rf -- "${TMP}";
 		rm -rf -- "${TMP2}";
 		exit 1;

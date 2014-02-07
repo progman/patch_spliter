@@ -47,59 +47,6 @@ namespace global
 	bool flag_pedantic = false;
 }
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-// save file
-int save_file(const std::string &file_name, const unsigned char *const p, size_t size)
-{
-	int rc;
-
-
-// open new file
-	umask(0);
-	rc = ::open(file_name.c_str(), O_WRONLY | O_CREAT | O_TRUNC | O_LARGEFILE, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-	if (rc == -1)
-	{
-		printf("\nERROR[save_file::open]: %s\n", strerror(errno));
-		return -1;
-	}
-	int file_handle = rc;
-
-
-// write file
-	size_t offset = 0;
-	for (;;)
-	{
-		if (offset == size) break;
-		rc = ::write(file_handle, p + offset, size - offset);
-		if (rc == -1)
-		{
-			printf("\nERROR[save_file::write]: %s\n", strerror(errno));
-			return -1;
-		}
-		offset += rc;
-	}
-
-
-// flush file
-	rc = ::fdatasync(file_handle);
-	if (rc != 0)
-	{
-		printf("\nERROR[save_file::fsync]: (%d)%s\n", errno, strerror(errno));
-		return -1;
-	}
-
-
-// close file
-	rc = ::close(file_handle);
-	if (rc != 0)
-	{
-		printf("\nERROR[save_file::close]: (%d)%s\n", errno, strerror(errno));
-		return -1;
-	}
-
-
-	return 0;
-}
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 // split file to strings
 int stage1(void *p_mmap, size_t size)
 {
@@ -399,8 +346,12 @@ int stage3(void *p_mmap, const std::string &file_name)
 #if (INTPTR_MAX == INT64_MAX)
 					sprintf(buf, "%s-%08lu-%08lu.patch", file_name.c_str(), file_count, token_count);
 #endif
-					rc = save_file(std::string(buf), (const unsigned char *)body.c_str(), body.size());
-					if (rc == -1) return -1;
+					rc = libcore::file_set(buf, 0, body.c_str(), body.size(), true);
+					if (rc == -1)
+					{
+						printf("\nERROR[libcore::file_set()]: %s\n", strerror(errno));
+						return -1;
+					}
 				}
 				else
 				{
@@ -423,8 +374,12 @@ int stage3(void *p_mmap, const std::string &file_name)
 #if (INTPTR_MAX == INT64_MAX)
 			sprintf(buf, "%s-%08lu.patch", file_name.c_str(), file_count);
 #endif
-			rc = save_file(std::string(buf), (const unsigned char *)body.c_str(), body.size());
-			if (rc == -1) return -1;
+			rc = libcore::file_set(buf, 0, body.c_str(), body.size(), true);
+			if (rc == -1)
+			{
+				printf("\nERROR[libcore::file_set()]: %s\n", strerror(errno));
+				return -1;
+			}
 		}
 	}
 
@@ -432,8 +387,33 @@ int stage3(void *p_mmap, const std::string &file_name)
 	return 0;
 }
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+int split(const std::string &file_name, void *p, size_t size)
+{
+	if (stage1(p, size) != 0)
+	{
+		global::item_list.clear();
+		return -1;
+	}
+
+	if (stage2(p, size) != 0)
+	{
+		global::item_list.clear();
+		return -1;
+	}
+
+	if (stage3(p, file_name) != 0)
+	{
+		global::item_list.clear();
+		return -1;
+	}
+
+	global::item_list.clear();
+	return 0;
+}
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 int do_it(const std::string &file_name)
 {
+	int result;
 	int rc;
 
 
@@ -476,10 +456,7 @@ int do_it(const std::string &file_name)
 
 
 // do work
-	stage1(p_mmap, size);
-	stage2(p_mmap, size);
-	stage3(p_mmap, file_name);
-	global::item_list.clear();
+	result = split(file_name, p_mmap, size);
 
 
 // close map file to memory
@@ -500,7 +477,7 @@ int do_it(const std::string &file_name)
 	}
 
 
-	return 0;
+	return result;
 }
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 // view help
