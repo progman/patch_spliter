@@ -9,8 +9,8 @@ PROG_TYPE           := exe
 
 OUT_DIR             := bin
 C_LIST              :=
-CPP_LIST            := patch_spliter.cpp
-HEADER_LIST         :=
+CPP_LIST            := submodule/libcore.cpp/libcore.cpp patch_spliter.cpp
+HEADER_LIST         := submodule/libcore.cpp/libcore.hpp
 
 CFLAGS              :=
 CPPFLAGS            :=

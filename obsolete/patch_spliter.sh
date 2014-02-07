@@ -1,37 +1,66 @@
 #!/bin/bash
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-# 0.0.1
+# 0.0.2
 # Alexey Potehin http://www.gnuplanet.ru/doc/cv
 #
 # git clone git://github.com/progman/patch_spliter
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+# check depends
+function check_prog()
+{
+	for i in ${1};
+	do
+		if [ "$(which ${i})" == "" ];
+		then
+			echo "FATAL: you must install \"${i}\"...";
+			return 1;
+		fi
+	done
+
+	return 0;
+}
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 function main()
 {
-	if [ ! -e "${FILE}" ];
+	check_prog "echo cat wc mktemp grep sed tail head printf rm";
+	if [ "${?}" != "0" ];
 	then
-		echo "example: ${0} file.patch";
-		exit 1;
+		return 1;
 	fi
 
-	TOTAL_LINE=$(cat ${FILE} | wc -l);
+
+	if [ ! -e "${1}" ];
+	then
+		echo "example: ${0} file.patch";
+		return 1;
+	fi
+
+	local TOTAL_LINE=$(cat ${1} | wc -l);
 
 	if [ "${TOTAL_LINE}" == "0" ];
 	then
 		echo "ERROR: file is empty";
-		exit 1;
+		return 1;
 	fi
 
 	(( TOTAL_LINE++ ));
 
+	local TMP;
 	TMP=$(mktemp);
-	grep -n diff "${FILE}" | sed -e 's/\:.*//g' >> "${TMP}";
+	grep -n diff "${1}" | sed -e 's/\:.*//g' >> "${TMP}";
 	echo "${TOTAL_LINE}" >> "${TMP}";
 
 #	cat "${TMP}";
 
-	COUNT=1;
+	local COUNT=1;
 
-	FLAG_FIRST='1';
+	local FLAG_FIRST='1';
+
+	local A;
+	local B;
+	local C;
+	local D;
+
 	while read -r B;
 	do
 		if [ "${FLAG_FIRST}" == "1" ];
@@ -39,7 +68,7 @@ function main()
 			if [ "${B}" != "1" ];
 			then
 				echo "ERROR: strange file";
-				exit 1;
+				return 1;
 			fi
 			FLAG_FIRST='0';
 			A="${B}";
@@ -56,7 +85,7 @@ function main()
 #		echo "C: ${C}";
 #		echo "D: ${D}";
 
-		tail -n ${D} "${FILE}" | head -n ${C} > ${FILE}-$(printf "%04u" ${COUNT}).patch;
+		tail -n ${D} "${1}" | head -n ${C} > ${1}-$(printf "%04u" ${COUNT}).patch;
 
 		(( COUNT++ ));
 
@@ -69,8 +98,12 @@ function main()
 
 
 	rm -rf "${TMP}" &> /dev/null < /dev/null;
+
+
+	return 0;
 }
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-FILE="${1}";
-main;
+main "${@}";
+
+exit "${?}";
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#

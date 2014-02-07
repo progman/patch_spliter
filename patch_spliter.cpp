@@ -2,18 +2,19 @@
 // 0.0.7
 // Alexey Potehin <gnuplanet@gmail.com>, http://www.gnuplanet.ru/doc/cv
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+#include <algorithm>
+#include <errno.h>
+#include <fcntl.h>
+#include <list>
 #include <stdio.h>
 #include <string>
 #include <string.h>
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <sys/mman.h>
-#include <list>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
-#include <algorithm>
-
+#include "submodule/libcore.cpp/libcore.hpp"
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 #if (INTPTR_MAX != INT32_MAX) && (INTPTR_MAX != INT64_MAX)
 #error "Environment not 32 or 64-bit."
 #endif
@@ -44,31 +45,6 @@ namespace global
 	std::list<global::item_t> item_list;
 
 	bool flag_pedantic = false;
-}
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-// convert string to boolean
-bool str2bool(const std::string &str)
-{
-	std::string tmp = str;
-
-	std::transform(tmp.begin(), tmp.end(), tmp.begin(), tolower);
-
-	if (tmp == "true")
-	{
-		return true;
-	}
-
-	if (tmp == "on")
-	{
-		return true;
-	}
-
-	if (tmp == "1")
-	{
-		return true;
-	}
-
-	return false;
 }
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 // save file
@@ -571,7 +547,7 @@ int main(int argc, char *argv[])
 			if ((key.size() >= tmpl.size()) && (key.substr(0, tmpl.size()) == tmpl))
 			{
 				std::string value = key.substr(tmpl.size(), key.size() - 1);
-				global::flag_pedantic = str2bool(value);
+				libcore::str2bool(global::flag_pedantic, false, value);
 			}
 		}
 
