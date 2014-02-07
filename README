@@ -2,7 +2,8 @@ Splits the patch file into parts
 
 
 1) Get this : git clone https://github.com/progman/patch_spliter.git
-2) Use this : patch_spliter file.patch
+2) Make this: git submodule update --init && make x64 && ./test.sh
+3) Enjoy!
 
 
 Example:
@@ -11,4 +12,4 @@ Example:
 
 Example:
     git diff --minimal master dev > master-dev.patch
-    patch_spliter --flag_pedantic=true master-dev.patch
+    patch_spliter -p master-dev.patch
