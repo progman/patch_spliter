@@ -346,7 +346,7 @@ int stage3(void *p_mmap, const std::string &file_name)
 #if (INTPTR_MAX == INT64_MAX)
 					sprintf(buf, "%s-%08lu-%08lu.patch", file_name.c_str(), file_count, token_count);
 #endif
-					rc = libcore::file_set(buf, 0, body.c_str(), body.size(), true);
+					rc = libcore::file_set(buf, 0, body.c_str(), body.size(), true, false);
 					if (rc == -1)
 					{
 						printf("\nERROR[libcore::file_set()]: %s\n", strerror(errno));
@@ -374,7 +374,7 @@ int stage3(void *p_mmap, const std::string &file_name)
 #if (INTPTR_MAX == INT64_MAX)
 			sprintf(buf, "%s-%08lu.patch", file_name.c_str(), file_count);
 #endif
-			rc = libcore::file_set(buf, 0, body.c_str(), body.size(), true);
+			rc = libcore::file_set(buf, 0, body.c_str(), body.size(), true, false);
 			if (rc == -1)
 			{
 				printf("\nERROR[libcore::file_set()]: %s\n", strerror(errno));
